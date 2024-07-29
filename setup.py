@@ -27,9 +27,7 @@ setup(
         "console_scripts": [
             "ros_bluerov2_interface = rosmav.ros_bluerov2_interface:main",
             "ppap = rosmav.ppap:main",
-            "armer = rosmav.armer:main",
             "test_dance = rosmav.test_dance:main",
-            "depth = rosmave.depth:main"
             "bluerov2_camera_interface = rosmav.bluerov2_camera_interface:main",
             "depth_control = rosmav.depth_control:main",
             "arm = rosmav.arm:main",
