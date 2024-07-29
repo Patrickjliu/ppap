@@ -144,7 +144,7 @@ class ROSBluerov2Interface(Node):
         """
         Set all channels to neutral values
         """
-        neutral_values = [1500] * 8
+        neutral_values = [OverrideRCIn.CHAN_NOCHANGE] * 18
         self.mavlink.mav.rc_channels_override_send(
             self.mavlink.target_system, self.mavlink.target_component, *neutral_values
         )
