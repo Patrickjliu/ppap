@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from mavros_msgs.msg import ManualControl
+from std_msgs.msg import Int16
 import time
 
 class SquareMovementNode(Node):

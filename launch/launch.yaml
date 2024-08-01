@@ -8,18 +8,6 @@ launch:
 
 - node:
     pkg: "rosmav"
-    exec: "heading_control"
-    name: "heading_control"
-    namespace: ""
-
-- node:
-    pkg: "rosmav"
     exec: "bluerov2_camera_interface"
     name: "bluerov2_camera_interface"
-    namespace: ""
-
-- node:
-    pkg: "rosmav"
-    exec: "lane_following"
-    name: "lane_following"
     namespace: ""
