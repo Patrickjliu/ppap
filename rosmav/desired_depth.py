@@ -22,7 +22,7 @@ class DesiredDepth(Node):
     def pub_depth(self):
         depth = Float64()
         depth.data = self.depth
-        desired_depth_pub(depth)
+        self.desired_depth_pub.publish(depth)
 
 
 def main(args=None):
