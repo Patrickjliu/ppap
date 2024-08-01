@@ -35,6 +35,7 @@ setup(
             "lane_following = rosmav.lane_following:main",
             "desired_depth = rosmav.desired_depth:main",
             "pressure_to_depth = rosmav.pressure_to_depth:main",
+            "square = rosmav.square:main",
         ],
     },
 )

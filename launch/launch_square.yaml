@@ -1,0 +1,37 @@
+launch:
+
+- node:
+    pkg: "rosmav"
+    exec: "ros_bluerov2_interface"
+    name: "bluerov2_interface"
+    namespace: ""
+
+- node:
+    pkg: "rosmav"
+    exec: "heading_control"
+    name: "heading_control"
+    namespace: ""
+
+- node:
+    pkg: "rosmav"
+    exec: "arm"
+    name: "arm"
+    namespace: ""
+
+- node:
+    pkg: "rosmav"
+    exec: "desired_depth"
+    name: "desired_depth"
+    namespace: ""
+    
+- node:
+    pkg: "rosmav"
+    exec: "depth_control"
+    name: "depth_control"
+    namespace: ""
+    
+- node:
+    pkg: "rosmav"
+    exec: "square"
+    name: "square"
+    namespace: ""

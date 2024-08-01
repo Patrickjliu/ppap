@@ -53,10 +53,16 @@ class HeadingControlNode(Node):
         self.get_logger().info(f"target heading: {self.target_heading}")
 
     def target_callback(self, msg):
-        self.target_heading = msg.data
+        '''
+        sets target_heading to the desired heading + current heading because I am lazy
+        '''
+        self.target_heading = msg.data + self.heading
         self.get_logger().info(f"target heading: {self.target_heading}")
 
     def derivative_callback(self, msg):
+        '''
+        sets the derivative to the current angular velocity of the robot around the z axis
+        '''
         self.derivative = msg.angular_velocity.z
         self.get_logger().info(f"current derivative: {self.derivative}")
 
@@ -73,7 +79,6 @@ class HeadingControlNode(Node):
         commands.r = power
         if np.isnan(commands.r):
             return
-
         self.get_logger().info(f"power: {power}")
         self.motion_pub.publish(commands)
 

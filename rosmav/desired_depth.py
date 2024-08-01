@@ -10,10 +10,19 @@ class DesiredDepth(Node):
     def __init__(self):
         super().__init__("DesiredDepth")
         
+        self.depth = 0.5
+        
         # Create a publisher for the temperature message
         self.desired_depth_pub = self.create_publisher(
             Float64, "bluerov2/desired_depth", 10
         )
+
+        self.loop = self.create_timer(5.0, self.pub_depth)
+
+    def pub_depth(self):
+        depth = Float64()
+        depth.data = self.depth
+        desired_depth_pub(depth)
 
 
 def main(args=None):
