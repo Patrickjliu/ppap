@@ -1,26 +1,25 @@
-from launch import LaunchDescription
-from launch_ros.actions import Node
+launch:
 
-def generate_launch_description():
-    return LaunchDescription([
-        Node(
-            package='rosmav'
-            namespace=' '
-            executable='ros_bluerov2_interface'
-            name='ros_interface'
-        ),
+- node:
+    pkg: "rosmav"
+    exec: "ros_bluerov2_interface"
+    name: "bluerov2_interface"
+    namespace: ""
 
-        Node(
-            package='rosmav'
-            namespace=' '
-            executable='test_node'
-            name='test_node'
-        ),
+- node:
+    pkg: "rosmav"
+    exec: "heading_control"
+    name: "heading_control"
+    namespace: ""
 
-        Node(
-            package='rosmav'
-            namespace=' '
-            executable='calculate_depth'
-            name='calculate_depth'
-        )
-    ])
+- node:
+    pkg: "rosmav"
+    exec: "bluerov2_camera_interface"
+    name: "bluerov2_camera_interface"
+    namespace: ""
+
+- node:
+    pkg: "rosmav"
+    exec: "lane_following"
+    name: "lane_following"
+    namespace: ""
