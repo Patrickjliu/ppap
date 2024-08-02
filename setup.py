@@ -36,6 +36,8 @@ setup(
             "desired_depth = rosmav.desired_depth:main",
             "pressure_to_depth = rosmav.pressure_to_depth:main",
             "square = rosmav.square:main",
+            "n_april_control = rosmav.n_april_control:main",
+            "final = rosmav.final:main",
         ],
     },
 )
