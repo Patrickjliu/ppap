@@ -25,7 +25,7 @@ class SquareMovementNode(Node):
         
         if self.state == 'MOVE_FORWARD':
             if (current_time - self.start_time) < self.duration_move:
-                self.publish_control_command(forward_power=500.0, yaw_power=0.0)
+                self.publish_control_command(forward_power=70.0, yaw_power=0.0)
                 self.get_logger().info("Moving straight.")
             else:
                 self.state = 'TURN_RIGHT'
@@ -34,7 +34,7 @@ class SquareMovementNode(Node):
 
         elif self.state == 'TURN_RIGHT':
             if (current_time - self.start_time) < self.duration_turn:
-                self.publish_control_command(forward_power=0.0, yaw_power=500.0)
+                self.publish_control_command(forward_power=0.0, yaw_power=-100.0)
                 self.get_logger().info("Turning right.")
             else:
                 self.state = 'MOVE_FORWARD'
@@ -55,8 +55,10 @@ class SquareMovementNode(Node):
     def stop_movement(self):
         command = ManualControl()
         command.header.stamp = self.get_clock().now().to_msg()
-        command.x = 0.0  # Forward/backward
-        command.r = 0.0  # Yaw (rotation)
+        command.x = 0.0
+        command.y = 0.0
+        command.z = 0.0
+        command.r = 0.0
         self.motion_pub.publish(command)
 
 
@@ -77,3 +79,6 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
+
+#50 as max 

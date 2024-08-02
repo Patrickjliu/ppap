@@ -20,7 +20,7 @@ class CombinedNode(Node):
         self.start_time = self.get_clock().now()
         self.duration_move = Duration(seconds=3.0)  # Duration to move forward
         self.duration_turn = Duration(seconds=1.0)  # Duration to turn
-        self.square_timer = self.create_timer(0.1, self.control_loop)
+        # self.square_timer = self.create_timer(0.1, self.control_loop)
 
         self.get_logger().info("Square movement initialized.")
 
@@ -47,8 +47,8 @@ class CombinedNode(Node):
 
         self.get_logger().info("Tag detection initialized.")
 
-        self.kill_range = 2
-        self.opp_ids = [23, 16, 3, 4]
+        self.kill_range = 1
+        self.opp_ids = [6, 7, 3, 10]
         self.tag_detected = False
         self.bridge = CvBridge()
 
@@ -58,7 +58,7 @@ class CombinedNode(Node):
             
             if self.state == 'MOVE_FORWARD':
                 if (current_time - self.start_time) < self.duration_move:
-                    self.publish_control_command(forward_power=500.0, yaw_power=0.0)
+                    self.publish_control_command(forward_power=70.0, yaw_power=0.0)
                     self.get_logger().info("Moving straight.")
                 else:
                     self.state = 'TURN_RIGHT'
@@ -67,14 +67,15 @@ class CombinedNode(Node):
 
             elif self.state == 'TURN_RIGHT':
                 if (current_time - self.start_time) < self.duration_turn:
-                    self.publish_control_command(forward_power=0.0, yaw_power=500.0)
+                    self.publish_control_command(forward_power=0.0, yaw_power=-100.0)
                     self.get_logger().info("Turning right.")
                 else:
                     self.state = 'MOVE_FORWARD'
                     self.start_time = current_time
-
-            elif self.state == 'DONE':
-                self.stop_movement()
+                
+    def calculate_contrast(self, img):
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        return cv2.Laplacian(gray, cv2.CV_64F).var()
 
 
     def tag_callback(self, msg):
@@ -85,6 +86,14 @@ class CombinedNode(Node):
         img = self.bridge.imgmsg_to_cv2(msg)
         self.width = msg.width
         self.height = msg.height
+
+        # Basic CV
+        # contrast = self.calculate_contrast(img)
+        # if contrast > 100:  # Adjust threshold as needed
+        #     self.get_logger().info("High contrast detected, slowing down.")
+        #     self.publish_control_command(forward_power=250.0, yaw_power=0.0)  # Slow down
+        #     rclpy.spin_once(self, timeout_sec=2.0)  # Give time for robot to lock onto target
+
         tags = self.detect_tags(img)
 
         if len(tags) > 0:
@@ -100,15 +109,14 @@ class CombinedNode(Node):
             self.publish_distance(distance)
             angle = self.get_tag_angle(closest_tag)
             self.publish_desired_heading(int(np.rad2deg(angle)))
-
+            self.get_logger().info("Distance to tag: {distance}")
             if distance < self.kill_range and closest_tag.tag_id in self.opp_ids:
                 self.flash()
                 self.stop_movement()
-                self.state = 'DONE'
         else:
             self.tag_detected = False
-            self.publish_desired_heading(90)
             self.get_logger().info("No tags detected.")
+            self.control_loop()
             
 
     def detect_tags(self, img):

@@ -10,7 +10,7 @@ class DesiredDepth(Node):
     def __init__(self):
         super().__init__("DesiredDepth")
         
-        self.depth = 0.5
+        self.depth = 0.6
         
         # Create a publisher for the temperature message
         self.desired_depth_pub = self.create_publisher(

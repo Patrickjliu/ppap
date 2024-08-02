@@ -47,7 +47,7 @@ class DepthController(Node):
         """
         super().__init__('depth_controller')
 
-        self.pid = PID(kp=50.0, ki=5, kd=1, setpoint=2)
+        self.pid = PID(kp=10.0, ki=3, kd=1.3, setpoint=0.6)
 
         self.manual_control_pub = self.create_publisher(
             ManualControl, 'bluerov2/manual_control', 10
@@ -107,20 +107,33 @@ class DepthController(Node):
         
         self.current_depth = msg.relative
 
-        current_time = self.get_clock().now()
-        if self.last_time is None:
-            self.last_time = current_time
-            return
+        # PID Controller
 
-        dt = (current_time - self.last_time).to_msg().nanosec / 1e9
+        # current_time = self.get_clock().now()
+        # if self.last_time is None:
+        #     self.last_time = current_time
+        #     return
 
-        if dt <= 0:
-            self.get_logger().warn("Invalid time step.")
-            return
-        control_signal = self.pid.update(self.current_depth, dt)
-        self.set_vertical_power(control_signal)
+        # dt = (current_time - self.last_time).to_msg().nanosec / 1e9
 
-        self.last_time = current_time
+        # if dt <= 0:
+        #     self.get_logger().warn("Invalid time step.")
+        #     return
+        # control_signal = self.pid.update(self.current_depth, dt)
+        # self.set_vertical_power(control_signal)
+
+        # self.last_time = current_time
+
+        # Bang-Bang Controller
+        commands = ManualControl()
+        if (self.current_depth - self.desired_depth) < 0.1:
+            commands.z = -20.0
+        elif (self.current_depth - self.desired_depth) > 0.1:
+            commands.z = 20.0
+        else:
+            commands.z = 0.0
+        self.manual_control_pub.publish(commands)
+        self.get_logger().info(f"sent commands: {commands.z}")
 
 def main(args=None):
     """
