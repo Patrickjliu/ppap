@@ -11,6 +11,9 @@ class SquareMovementNode(Node):
         super().__init__("square_movement_node")
         self.motion_pub = self.create_publisher(ManualControl, "bluerov2/manual_control", 10)
         self.heading_pub = self.create_publisher(Int16, "bluerov2/desired_heading", 10)
+        self.i = 0
+        self.r = 0
+        self.l = 0
         
         self.state = 'MOVE_FORWARD'
         self.start_time = self.get_clock().now()
@@ -23,22 +26,50 @@ class SquareMovementNode(Node):
     def control_loop(self):
         current_time = self.get_clock().now()
         
-        if self.state == 'MOVE_FORWARD':
-            if (current_time - self.start_time) < self.duration_move:
-                self.publish_control_command(forward_power=70.0, yaw_power=0.0)
-                self.get_logger().info("Moving straight.")
-            else:
-                self.state = 'TURN_RIGHT'
-                self.start_time = current_time
-                self.publish_heading_command(90)
+        if self.i % 2 == 0:
+            if self.state == 'MOVE_FORWARD':
+                if (current_time - self.start_time) < self.duration_move:
+                    self.publish_control_command(forward_power=50.0, yaw_power=0.0)
+                    self.get_logger().info("Moving straight.")
+                else:
+                    self.state = 'TURN_RIGHT'
+                    self.start_time = current_time
+                    self.publish_heading_command(90)
 
-        elif self.state == 'TURN_RIGHT':
-            if (current_time - self.start_time) < self.duration_turn:
-                self.publish_control_command(forward_power=0.0, yaw_power=-100.0)
-                self.get_logger().info("Turning right.")
-            else:
-                self.state = 'MOVE_FORWARD'
-                self.start_time = current_time
+            elif self.state == 'TURN_RIGHT':
+                if (current_time - self.start_time) < self.duration_turn:
+                    self.publish_control_command(forward_power=0.0, yaw_power=-50.0)
+                    self.get_logger().info("Turning right.")
+                else:
+                    self.state = 'MOVE_FORWARD'
+                    self.start_time = current_time
+
+            self.r += 1
+            if self.r % 4 == 0:
+                self.i += 1
+
+        else:
+            if self.state == 'MOVE_FORWARD':
+                if (current_time - self.start_time) < self.duration_move:
+                    self.publish_control_command(forward_power=50.0, yaw_power=0.0)
+                    self.get_logger().info("Moving straight.")
+                else:
+                    self.state = 'TURN_LEFT'
+                    self.start_time = current_time
+                    self.publish_heading_command(90)
+
+            elif self.state == 'TURN_LEFT':
+                if (current_time - self.start_time) < self.duration_turn:
+                    self.publish_control_command(forward_power=0.0, yaw_power=50.0)
+                    self.get_logger().info("Turning left.")
+                else:
+                    self.state = 'MOVE_FORWARD'
+                    self.start_time = current_time
+
+            self.l += 1
+            if self.l % 4 == 0:
+                self.i += 1
+
 
     def publish_control_command(self, forward_power, yaw_power):
         command = ManualControl()
@@ -55,10 +86,8 @@ class SquareMovementNode(Node):
     def stop_movement(self):
         command = ManualControl()
         command.header.stamp = self.get_clock().now().to_msg()
-        command.x = 0.0
-        command.y = 0.0
-        command.z = 0.0
-        command.r = 0.0
+        command.x = 0.0  # Forward/backward
+        command.r = 0.0  # Yaw (rotation)
         self.motion_pub.publish(command)
 
 

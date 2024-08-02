@@ -27,7 +27,7 @@ class DepthPublisher(Node):
             self.get_logger().warn("Pressure data missing.")
             return
 
-        atm = 104250.0  # Atmospheric pressure in Pa
+        atm = 101325.0  # Atmospheric pressure in Pa
         water_density = 1000  # kg/m^3
         gravity = 9.81  # m/s^2
         static_pressure = self.static_pressure.fluid_pressure

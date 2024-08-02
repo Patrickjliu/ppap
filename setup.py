@@ -38,6 +38,7 @@ setup(
             "square = rosmav.square:main",
             "n_april_control = rosmav.n_april_control:main",
             "final = rosmav.final:main",
+            "finalV2 = rosmav.finalV2:main",
         ],
     },
 )
